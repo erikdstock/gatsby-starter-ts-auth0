@@ -1,5 +1,5 @@
 .DS_Store
-.env
+
 .yarn-integrity
 yarn-debug.log
 yarn-error.log
@@ -12,6 +12,7 @@ typings/
 public
 schema.json
 schema.graphql
+.env.development
 
 # Logs
 logs
