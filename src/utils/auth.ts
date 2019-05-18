@@ -2,38 +2,65 @@
   Approach taken from 
   https://github.com/gatsbyjs/store.gatsbyjs.org/blob/master/src/utils/auth.js
 */
-import auth0js from "auth0-js"
+import auth0js, { Auth0Callback, WebAuth } from "auth0-js"
 
 export const isBrowser = typeof window !== "undefined"
 
+const tokens: { [p: string]: string | null } = {
+  accessToken: null,
+  idToken: null,
+  // expiresAt: false,
+}
+
 // Only instantiate Auth0 if we’re in the browser.
-const auth0 = isBrowser
+const auth0: WebAuth = isBrowser
   ? new auth0js.WebAuth({
-      domain: process.env.AUTH0_DOMAIN,
-      clientID: process.env.AUTH0_CLIENT_ID,
+      domain: process.env.AUTH0_DOMAIN as string,
+      clientID: process.env.AUTH0_CLIENT_ID as string,
       redirectUri: process.env.AUTH0_CALLBACK,
       responseType: "token id_token",
       scope: "openid profile email",
     })
-  : {}
+  : ({} as any)
 
-export const login = () => {
-  if (!isBrowser) {
-    return
+// Set tokens (in memory only)
+const setSession: Auth0Callback<any> = (err, authResult) => {
+  if (err) {
+    throw err
+  } else if (authResult) {
+    tokens.idToken = authResult.idToken
+    tokens.accessToken = authResult.accessToken
   }
+}
 
-  auth0.authorize()
+/**
+ * Begin the login flow through auth0
+ */
+export const login = () => {
+  if (isBrowser) {
+    auth0.authorize()
+  }
+}
+
+/**
+ * Automatically re-fetch the session from auth0
+ * using an auth0 cookie
+ */
+export const renewSession = () => {
+  auth0.checkSession({}, setSession)
+}
+
+/**
+ * Use Auth0 library to parse the incoming
+ */
+export const handleAuthentication = () => {
+  // Parse the token using JWKs:
+  auth0.parseHash(setSession)
 }
 
 // // To speed things up, we’ll keep the profile stored unless the user logs out.
 // // This prevents a flicker while the HTTP round-trip completes.
 // let profile = false
-
-// const tokens = {
-//   accessToken: false,
-//   idToken: false,
-//   expiresAt: false,
-// }
 
 // export const logout = () => {
 //   localStorage.setItem("isLoggedIn", false)
