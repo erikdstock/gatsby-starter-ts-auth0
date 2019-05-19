@@ -13,6 +13,7 @@ public
 schema.json
 schema.graphql
 .env.development
+.env.production
 
 # Logs
 logs

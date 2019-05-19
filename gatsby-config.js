@@ -1,7 +1,7 @@
 module.exports = {
   siteMetadata: {
-    title: `Gatsby Default Starter`,
-    description: `Kick off your next, great Gatsby project with this default starter. This barebones starter ships with the main Gatsby configuration files you might need.`,
+    title: `Big Secret`,
+    description: `Gatsby example app with Auth0 + typescript.`,
     author: `@gatsbyjs`,
   },
   plugins: [
@@ -19,8 +19,8 @@ module.exports = {
     {
       resolve: `gatsby-plugin-manifest`,
       options: {
-        name: `gatsby-starter-default`,
-        short_name: `starter`,
+        name: `gatsby-starter-ts-auth0`,
+        short_name: `TsAuth0`,
         start_url: `/`,
         background_color: `#663399`,
         theme_color: `#663399`,
